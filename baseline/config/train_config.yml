@@ -7,15 +7,15 @@ TRAINER :
   debug: False
   tokenizer: ElectraTokenizerFast
   model: electra
-  pretrained: monologg/koelectra-small-v3-discriminator
+  pretrained: monologg/koelectra-base-v3-discriminator
   optimizer: adamw
   learning_rate: 5.0e-4
   loss: crossentropy
   metric:
     - accuracy
-  n_epochs: 20
+  n_epochs: 2
   early_stopping_target: val_loss
-  early_stopping_patience: 10
+  early_stopping_patience: 0
   early_stopping_mode: min
   amp: False
   gpu: 0
