@@ -1,5 +1,5 @@
 DIRECTORY:
-  dataset: path_to_train.json
+  dataset: ../data
 
 AUGMENTATION:
   

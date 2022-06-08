@@ -1,5 +1,5 @@
 DIRECTORY:
-  dataset: path_to_test.json_and_sample_submission
+  dataset: ../data
 
 TRAIN:
   train_serial: 'YYYYMMDD_SERIAL'
