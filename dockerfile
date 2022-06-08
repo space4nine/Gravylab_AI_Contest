@@ -6,5 +6,3 @@ WORKDIR /gravylab_ai_contest/baseline
 
 RUN pip install --upgrade pip
 RUN pip install matplotlib wandb scikit-learn transformers pandas
-
-CMD ["python", "train.py"]
