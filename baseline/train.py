@@ -57,6 +57,13 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if __name__ == '__main__': 
     """
+    To Handle => 'RuntimeError: CUDA out of memory.'
+    """
+    import gc
+    gc.collect()
+    torch.cuda.empty_cache()
+
+    """
     00. Set Logger
     """
     logger = get_logger(name='train', dir_=RECORDER_DIR, stream=False)
