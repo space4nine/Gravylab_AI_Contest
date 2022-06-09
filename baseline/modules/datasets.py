@@ -20,9 +20,10 @@ class QADataset(Dataset):
         self.mecab = Mecab()
         self.stopwords = [
             '은', '는', '이', '가', '을', '를', 
-            '의', '로', '인', '하', '와', '과', 
-            '있', '어서', '나', '으로', '였', 
-            '기', '에', '서', '에서', '다', '한다'
+            '.', ',', '"', "'", '?', '!', '@', '#',
+            # '의', '로', '인', '하', '와', '과', 
+            # '있', '어서', '나', '으로', '였', 
+            # '기', '에', '서', '에서', '다', '한다'
             ]
         self.mode = mode
         self.data = load_json(data_dir)
@@ -46,11 +47,33 @@ class QADataset(Dataset):
     def preprocess(self):
         contexts, questions, answers, question_ids = self.read_squad()
         if self.mode == 'test':
+            contexts_ = []
+            questions_ = []
+            for context in contexts:
+                context = self.mecab.morphs(context)
+                context = ' '.join([word for word in context if word not in self.stopwords])
+                contexts_.append(context)
+            for question in questions:
+                question = self.mecab.morphs(question)
+                question = ' '.join([word for word in question if word not in self.stopwords])
+                questions_.append(question)
             encodings = self.tokenizer(contexts, questions, truncation=True, max_length = self.max_seq_len, padding=True)
             return encodings, question_ids
         else: # train or val
             self.add_end_idx(answers, contexts)
-            encodings = self.tokenizer(contexts, questions, truncation=True, max_length = self.max_seq_len, padding=True)
+
+            contexts_ = []
+            questions_ = []
+            for context in contexts:
+                context = self.mecab.morphs(context)
+                context = ' '.join([word for word in context if word not in self.stopwords])
+                contexts_.append(context)
+            for question in questions:
+                question = self.mecab.morphs(question)
+                question = ' '.join([word for word in question if word not in self.stopwords])
+                questions_.append(question)
+
+            encodings = self.tokenizer(contexts_, questions_, truncation=True, max_length = self.max_seq_len, padding=True)
             self.add_token_positions(encodings, answers)
         
             return encodings, answers
@@ -74,12 +97,12 @@ class QADataset(Dataset):
         for group in self.data['data'][:till]:
             for passage in group['paragraphs']:
                 context = passage['context']
-                context = self.mecab.morphs(context)
-                context = ' '.join([word for word in context if word not in self.stopwords])
+                # context = self.mecab.morphs(context)
+                # context = ' '.join([word for word in context if word not in self.stopwords])
                 for qa in passage['qas']:
                     question = qa['question']
-                    question = self.mecab.morphs(question)
-                    question = ' '.join([word for word in question if word not in self.stopwords])
+                    # question = self.mecab.morphs(question)
+                    # question = ' '.join([word for word in question if word not in self.stopwords])
                     if self.mode == 'test':
                         contexts.append(context)
                         questions.append(question)
@@ -132,7 +155,7 @@ class QADataset(Dataset):
 
             # answer passage truncated
             if start_positions[-1] is None:
-                start_positions[-1] = tokenizer.model_max_length
+                start_positions[-1] = self.tokenizer.model_max_length
             # end position cannot be found, shift until found
             shift = 1
             while end_positions[-1] is None:
