@@ -249,7 +249,7 @@ class Train:
 
         # !Wandb
         if self.wandb == True:
-            wandb_project_serial = 'template'
+            wandb_project_serial = 'gravylab ai contest'
             wandb.init(project=wandb_project_serial, dir=RECORDER_DIR, entity=self.wandb_username)
             wandb.run.name = train_serial
             wandb.config.update(config)

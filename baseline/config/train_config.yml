@@ -7,7 +7,7 @@ TRAINER :
   debug: False
   tokenizer: ElectraTokenizerFast
   model: electra
-  pretrained: monologg/koelectra-base-v3-discriminator
+  pretrained: monologg/koelectra-small-v3-discriminator
   optimizer: adamw
   learning_rate: 5.0e-4
   loss: crossentropy
