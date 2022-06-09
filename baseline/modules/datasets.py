@@ -11,11 +11,19 @@ from modules.utils import load_json
 import numpy as np
 import os
 import torch
+from konlpy.tag import Mecab
 
 
 class QADataset(Dataset):
     
     def __init__ (self, data_dir: str, tokenizer, max_seq_len: int, mode = 'train', debug = False):
+        self.mecab = Mecab()
+        self.stopwords = [
+            '은', '는', '이', '가', '을', '를', 
+            '의', '로', '인', '하', '와', '과', 
+            '있', '어서', '나', '으로', '였', 
+            '기', '에', '서', '에서', '다', '한다'
+            ]
         self.mode = mode
         self.data = load_json(data_dir)
         
@@ -66,8 +74,12 @@ class QADataset(Dataset):
         for group in self.data['data'][:till]:
             for passage in group['paragraphs']:
                 context = passage['context']
+                context = self.mecab.morphs(context)
+                context = ' '.join([word for word in context if word not in self.stopwords])
                 for qa in passage['qas']:
                     question = qa['question']
+                    question = self.mecab.morphs(question)
+                    question = ' '.join([word for word in question if word not in self.stopwords])
                     if self.mode == 'test':
                         contexts.append(context)
                         questions.append(question)

@@ -13,7 +13,7 @@ TRAINER :
   loss: crossentropy
   metric:
     - accuracy
-  n_epochs: 2
+  n_epochs: 1
   early_stopping_target: val_loss
   early_stopping_patience: 0
   early_stopping_mode: min
